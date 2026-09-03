@@ -1,0 +1,124 @@
+[gd_scene load_steps=17 format=3]
+
+[ext_resource type="Script" path="res://src/world3d/hex_world_prototype.gd" id="1_world"]
+[ext_resource type="Script" path="res://src/world3d/rendering/strategy_camera_3d.gd" id="2_camera"]
+[ext_resource type="Script" path="res://src/world3d/resources/world_generation_settings.gd" id="3_settings"]
+[ext_resource type="Script" path="res://src/world3d/ui/hex_world_lab_panel.gd" id="4_lab"]
+[ext_resource type="Script" path="res://src/world3d/ui/hex_world_loading_overlay.gd" id="5_loading"]
+[ext_resource type="Shader" path="res://src/world3d/rendering/hex_ocean.gdshader" id="6_ocean"]
+[ext_resource type="Texture2D" path="res://assets/world3d/water/Water_UV.png" id="7_water_uv"]
+[ext_resource type="Texture2D" path="res://assets/world3d/water/Water_N_A.png" id="8_water_normal_a"]
+[ext_resource type="Texture2D" path="res://assets/world3d/water/Water_N_B.png" id="9_water_normal_b"]
+[ext_resource type="Texture2D" path="res://assets/world3d/water/Foam.png" id="10_water_foam"]
+[ext_resource type="Texture2D" path="res://assets/world3d/water/Caustic.png" id="11_water_caustic"]
+
+[sub_resource type="Resource" id="Resource_settings"]
+script = ExtResource("3_settings")
+
+[sub_resource type="Environment" id="Environment_world"]
+background_mode = 1
+background_color = Color(0.57, 0.72, 0.82, 1)
+ambient_light_source = 2
+ambient_light_color = Color(0.75, 0.81, 0.9, 1)
+ambient_light_energy = 0.32
+tonemap_mode = 2
+
+[sub_resource type="ShaderMaterial" id="Material_ocean"]
+shader = ExtResource("6_ocean")
+shader_parameter/uv_sampler = ExtResource("7_water_uv")
+shader_parameter/normalmap_a_sampler = ExtResource("8_water_normal_a")
+shader_parameter/normalmap_b_sampler = ExtResource("9_water_normal_b")
+shader_parameter/foam_sampler = ExtResource("10_water_foam")
+shader_parameter/caustic_sampler = ExtResource("11_water_caustic")
+
+[sub_resource type="StandardMaterial3D" id="Material_ocean_floor"]
+albedo_color = Color(0.141176, 0.372549, 0.478431, 1)
+metallic = 0.02
+roughness = 0.92
+
+[sub_resource type="StandardMaterial3D" id="Material_hex_debug"]
+shading_mode = 0
+vertex_color_use_as_albedo = true
+transparency = 1
+no_depth_test = true
+render_priority = 1
+
+[sub_resource type="StandardMaterial3D" id="Material_chunk_debug"]
+shading_mode = 0
+vertex_color_use_as_albedo = true
+transparency = 1
+no_depth_test = true
+render_priority = 1
+
+[node name="HexWorldDevelopment" type="Node3D"]
+script = ExtResource("1_world")
+settings = SubResource("Resource_settings")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_world")
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+rotation_degrees = Vector3(-58, -32, 0)
+light_color = Color(1, 0.94, 0.82, 1)
+light_energy = 0.95
+shadow_enabled = true
+
+[node name="TerrainChunks" type="Node3D" parent="."]
+unique_name_in_owner = true
+
+[node name="TerrainChunksFar" type="Node3D" parent="."]
+unique_name_in_owner = true
+
+[node name="TerrainColliders" type="Node3D" parent="."]
+unique_name_in_owner = true
+
+[node name="HydrologyChunks" type="Node3D" parent="."]
+unique_name_in_owner = true
+
+[node name="EcologyChunks" type="Node3D" parent="."]
+unique_name_in_owner = true
+
+[node name="UnderwaterEcologyChunks" type="Node3D" parent="."]
+unique_name_in_owner = true
+
+[node name="OceanFloor" type="MeshInstance3D" parent="."]
+unique_name_in_owner = true
+material_override = SubResource("Material_ocean_floor")
+
+[node name="Ocean" type="MeshInstance3D" parent="."]
+unique_name_in_owner = true
+material_override = SubResource("Material_ocean")
+
+[node name="HexDebug" type="MeshInstance3D" parent="."]
+unique_name_in_owner = true
+material_override = SubResource("Material_hex_debug")
+
+[node name="ChunkDebug" type="MeshInstance3D" parent="."]
+unique_name_in_owner = true
+material_override = SubResource("Material_chunk_debug")
+
+[node name="StrategyCamera" type="Camera3D" parent="."]
+unique_name_in_owner = true
+current = true
+script = ExtResource("2_camera")
+
+[node name="Interface" type="CanvasLayer" parent="."]
+
+[node name="TestPanel" type="PanelContainer" parent="Interface"]
+unique_name_in_owner = true
+offset_left = 16.0
+offset_top = 16.0
+offset_right = 320.0
+offset_bottom = 704.0
+script = ExtResource("4_lab")
+
+[node name="LoadingOverlay" type="PanelContainer" parent="Interface"]
+unique_name_in_owner = true
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("5_loading")
