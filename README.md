@@ -1,9 +1,7 @@
 # Godot Test
 
-Private, standalone reproduction project for the 3D hex map generator extracted
-from **The Last Crown**. It contains the generator stages, development lab,
-rendering code, deterministic preview capture, and only the map-size data needed
-to run them.
+Standalone reproduction project for the 3D hex map generator extracted
+It contains the generator stages, development lab, rendering code, deterministic preview capture, and only the map-size data needed to run them.
 
 ## Requirements
 
